@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "type-graphql";
+import { Field, InputType, ObjectType } from "type-graphql";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @ObjectType()
@@ -18,5 +18,23 @@ export default class Country {
 
     @Field()
     @Column()
+    continent: string;
+
+    @Field()
+    @Column()
+    emoji: string;
+}
+@InputType()
+export class InputCreateCountry implements Omit<Country, "id"> {
+    @Field()
+    name: string;
+
+    @Field()
+    code: string;
+
+    @Field()
+    continent: string;
+
+    @Field()
     emoji: string;
 }

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node-dev --exit-child --watch src --poll src/index.ts"
+    "start": "ts-node-dev --exit-child --watch src --poll src/index.ts",
+    "seed": "ts-node src/scripts/seed.ts"
   },
   "keywords": [],
   "author": "",
