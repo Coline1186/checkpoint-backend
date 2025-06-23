@@ -1,12 +1,20 @@
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import Country, { InputCreateCountry } from "../entities/country.entity";
 import CountryService from "../services/country.service";
+import { CountryTotalResponse } from "../dto/CountryTotalResponse";
+import datasource from "../lib/datasource";
 
 @Resolver()
 export default class CountryResolver {
-    @Query(() => [Country])
-    async countries() {
-        return await new CountryService().listCountries();
+    @Query(() => CountryTotalResponse)
+    async countries(): Promise<CountryTotalResponse> {
+        const repo = datasource.getRepository(Country);
+        const countries = await repo.find();
+
+        return {
+            countries,
+            total: countries.length
+        }
     }
 
     @Query(() => Country)
@@ -14,9 +22,17 @@ export default class CountryResolver {
         return await new CountryService().findCountryByCode(code);
     }
 
-    @Query(() => [Country])
+    @Query(() => CountryTotalResponse)
     async countriesByContinent(@Arg("continent") continent: string) {
-        return await new CountryService().findCountryByContinent(continent);
+        const repo = datasource.getRepository(Country);
+        const countries = await repo.find({ where: { continent } });
+        if (countries.length === 0) {
+            throw new Error(`No countries found for continent ${continent}`);
+        }
+        return {
+            countries,
+            total: countries.length
+        };
     }
 
     @Mutation(() => Country)
